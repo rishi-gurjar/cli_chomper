@@ -1,0 +1,5 @@
+ciphertext, url, date
+860dbb2111878369a7244288ad349ee5, zoom.us, 11:22:03 PM
+cdc7f327e0940bb5adedeedef45138a4, netflix.com, 11:22:32 PM
+927f2055ec59220c679da8927114c85c, apple.com, 11:44:29 PM
+232393ae8a969b0748bd9e46c2cb4414, yt.com, 11:44:42 PM
