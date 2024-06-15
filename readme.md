@@ -3,12 +3,12 @@
 Using [FIPS-197](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf)
 
 #### OPTIONS:
-  `-n, --new <NEW>`        Create new password
-  `-u, --url <URL>`        Url for a new password
-  `-v, --view <VIEW>`      View all passwords [possible values: true, false]
-  `-d, --delete <DELETE>`  Delete a password
-  `-h, --help`             Print help
-  `-V, --version`          Print version
+`-n, --new <NEW>`        Create new password
+`-u, --url <URL>`        Url for a new password
+`-v, --view <VIEW>`      View all passwords [possible values: true, false]
+`-d, --delete <DELETE>`  Delete a password
+`-h, --help`             Print help
+`-V, --version`          Print version
 
 
 #### EXTRA INFO
