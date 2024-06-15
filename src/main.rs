@@ -170,6 +170,7 @@ fn decrypt(ciphertext: String) -> Result<String, ()> {
 fn main() {
 
     let args: Args = Args::parse();
+    println!("When adding new passwords, make sure to escape (\\) special characters!\n");
 
     if let Some(new) = args.new {
         if let Some(url) = args.url {

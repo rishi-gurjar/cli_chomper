@@ -10,7 +10,7 @@ after cloning, in root, run `cargo install --path .` to install to your $HOME pa
 #### OPTIONS
 | Command | Description |
 | :------ | :--- |
-|`-n, --new <NEW>`   |     Create new password |
+|`-n, --new <NEW>`   |     Create new password (When adding new passwords, make sure to escape (\) special characters) |
 |`-u, --url <URL>`   |     Url for a new password |
 |`-v, --view <VIEW>`   |   View all passwords [possible values: true, false] |
 |`-d, --delete <DELETE>` | Delete a password | 
