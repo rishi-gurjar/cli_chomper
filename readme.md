@@ -1,6 +1,6 @@
 
 ## cli_chomper
-- local, secure password storage, encrypted using AES-128, in Rust.
+##### local, secure password storage, encrypted using AES-128, in Rust.
 - encryption is fully abstracted for the user. (AES redone in Rust using [FIPS-197](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf))
 - CRUD operations in `src/main.rs` and AES implementation in `src/aes.rs`
 
