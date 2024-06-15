@@ -1,25 +1,39 @@
 
-## cli_chomper: stores your passwords locally, encrypted using AES-128, in Rust
-Using [FIPS-197](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf)
+## cli_chomper
+- local, secure password storage, encrypted using AES-128, in Rust.
+- encryption is fully abstracted for the user. (AES redone in Rust using [FIPS-197](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf))
+- CRUD operations in `src/main.rs` and AES implementation in `src/aes.rs`
 
-#### OPTIONS:
-`-n, --new <NEW>`        Create new password
-`-u, --url <URL>`        Url for a new password
-`-v, --view <VIEW>`      View all passwords [possible values: true, false]
-`-d, --delete <DELETE>`  Delete a password
-`-h, --help`             Print help
-`-V, --version`          Print version
+#### INSTALLATION
+after cloning, in root, run `cargo install --path .` to install to your $HOME path
 
+#### OPTIONS
+| Command | Description |
+| :------ | :--- |
+|`-n, --new <NEW>`   |     Create new password |
+|`-u, --url <URL>`   |     Url for a new password |
+|`-v, --view <VIEW>`   |   View all passwords [possible values: true, false] |
+|`-d, --delete <DELETE>` | Delete a password | 
+|`-h, --help`       |      Print help |
+|`-V, --version`   |       Print version |
 
-#### EXTRA INFO
+#### EXAMPLE USES
+| Command | Description |
+| :------ | :--- |
+| `cli_chomper -n securepassword -u apple.com` | Creates password "securepassword" for the website "apple.com" |
+| `cli_chomper -v true` | Displays all passwords |
+| `cli_chomper -d apple.com` | Deletes the password for website "apple.com" |
+
 ---
+
+
+#### Research notes - no salting done in this implementation since it is pure encoding
 
 every plaintext -> ciphertext through the following function:
 
 1. TRANSLATION: plaintext (String) -> UTF-8 Encoded binary
-2. TRANSLATION: salt (UInt64) -> 64-bit binary
-3. CONCATENATION: encoded plaintext (Int) + 64-bit binary salt
-4. ENCRYPTION: concatenated binary is concatenated with a salt and ran through a cipher, encrypted with a symmetric key (128, 192, or 256 bits). key is stored as plaintext on local device
+2. CONCATENATION: encoded plaintext (Int) + 64-bit binary key
+3. ENCRYPTION: concatenated binary is concatenated with a salt and ran through a cipher, encrypted with a symmetric key (128, 192, or 256 bits). key is stored as plaintext on local device
 
 salts: (one is chosen)
 - climate: no2 + co concentrations at the lat and long of the user (https://openweathermap.org/api/air-pollution)

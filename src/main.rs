@@ -66,10 +66,12 @@ fn add_new_password(password: String, url: String) {
             if is_pm { "PM" } else { "AM" })
             .as_bytes())
         .expect("Failed to write to file");
-    println!("password added successfully");
+    println!("Password {password} added successfully | Cyphertext: {ciphertext}");
 }
 
 fn view_all_passwords() {
+    assert!(OpenOptions::new().read(true).open("data.txt").is_ok(), "File does not exist");
+
     let content = read_to_string("data.txt").expect("Unable to read file");
     let mut lines: Vec<&str> = content.split("\n").collect();
     println!("{: <10} | {: <20} | {: <10}", "PASSWORD", "URL", "DATE ADDED");
@@ -97,17 +99,24 @@ fn delete_password(url: String) {
     let mut lines: Vec<&str> = content.split("\n").collect();
     let mut new_content: String = String::new();
 
+    let mut count = 0;
     for line in lines {
         let columns: Vec<&str> = line.split(",").collect();
         if columns.len() > 1 && columns[1].trim().contains(&url) {
-            print!("Deleting: {}", line);
+            println!("Deleted {}", line);
+            count += 1;
             continue;
         }
         new_content.push_str(line);
-        new_content.push_str("\n");    
+        new_content.push_str("\n");  
+
     }
+    if count == 0 {
+        println!("No password found for {url}")
+    } 
     // Write the new content to the file
     write("data.txt", new_content).expect("Unable to write file");
+    view_all_passwords()
 }
 
 fn encrypt(input: &str) -> String {
