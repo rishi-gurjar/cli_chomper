@@ -1,10 +1,10 @@
 extern crate hex;
 
-const Nb: usize = 4;
-const Nk: usize = 4;
-const Nr: usize = 10;
+const NB: usize = 4;
+const NK: usize = 4;
+const NR: usize = 10;
 
-type State = [[u8; Nb]; 4];
+type State = [[u8; NB]; 4];
 
 pub const S_BOX: [u8; 256] = [
     0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
@@ -61,7 +61,7 @@ pub const RCON: [u8; 11] = [
 
 pub fn sub_bytes(state: &mut State) {
     for i in 0..4 {
-        for j in 0..Nb {
+        for j in 0..NB {
             state[i][j] = S_BOX[state[i][j] as usize];
         }
     }
@@ -69,7 +69,7 @@ pub fn sub_bytes(state: &mut State) {
 
 pub fn inv_sub_bytes(state: &mut State) {
     for i in 0..4 {
-        for j in 0..Nb {
+        for j in 0..NB {
             state[i][j] = INV_S_BOX[state[i][j] as usize];
         }
     }
@@ -96,7 +96,7 @@ fn xtime(x: u8) -> u8 {
 }
 
 pub fn mix_columns(state: &mut State) {
-    for i in 0..Nb {
+    for i in 0..NB {
         let a = state[0][i];
         let b = state[1][i];
         let c = state[2][i];
@@ -110,7 +110,7 @@ pub fn mix_columns(state: &mut State) {
 }
 
 pub fn inv_mix_columns(state: &mut State) {
-    for i in 0..Nb {
+    for i in 0..NB {
         let a = state[0][i];
         let b = state[1][i];
         let c = state[2][i];
@@ -139,86 +139,86 @@ fn mul(x: u8, y: u8) -> u8 {
 
 pub fn add_round_key(state: &mut State, round_key: &[u8; 16]) {
     for i in 0..4 {
-        for j in 0..Nb {
+        for j in 0..NB {
             state[i][j] ^= round_key[i + 4 * j];
         }
     }
 }
 
-pub fn key_expansion(key: &[u8; 16], w: &mut [[u8; 4]; Nb * (Nr + 1)]) {
+pub fn key_expansion(key: &[u8; 16], w: &mut [[u8; 4]; NB * (NR + 1)]) {
     let mut temp = [0u8; 4];
 
-    for i in 0..Nk {
+    for i in 0..NK {
         w[i] = [key[4 * i], key[4 * i + 1], key[4 * i + 2], key[4 * i + 3]];
     }
 
-    for i in Nk..(Nb * (Nr + 1)) {
+    for i in NK..(NB * (NR + 1)) {
         temp.copy_from_slice(&w[i - 1]);
 
-        if i % Nk == 0 {
+        if i % NK == 0 {
             temp.rotate_left(1);
             for j in 0..4 {
                 temp[j] = S_BOX[temp[j] as usize];
             }
-            temp[0] ^= RCON[i / Nk];
+            temp[0] ^= RCON[i / NK];
         }
 
         for j in 0..4 {
-            w[i][j] = w[i - Nk][j] ^ temp[j];
+            w[i][j] = w[i - NK][j] ^ temp[j];
         }
     }
 }
 
 pub fn cipher(input: &[u8; 16], output: &mut [u8; 16], key: &[u8; 16]) {
-    let mut state: State = [[0u8; Nb]; 4];
-    let mut round_keys = [[0u8; 4]; Nb * (Nr + 1)];
+    let mut state: State = [[0u8; NB]; 4];
+    let mut round_keys = [[0u8; 4]; NB * (NR + 1)];
 
     key_expansion(key, &mut round_keys);
 
     for i in 0..4 {
-        for j in 0..Nb {
+        for j in 0..NB {
             state[i][j] = input[i + 4 * j];
         }
     }
 
     add_round_key(&mut state, &round_keys[0..4].concat().try_into().unwrap());
 
-    for round in 1..Nr {
+    for round in 1..NR {
         sub_bytes(&mut state);
         shift_rows(&mut state);
         mix_columns(&mut state);
-        add_round_key(&mut state, &round_keys[round * Nb..(round + 1) * Nb].concat().try_into().unwrap());
+        add_round_key(&mut state, &round_keys[round * NB..(round + 1) * NB].concat().try_into().unwrap());
     }
 
     sub_bytes(&mut state);
     shift_rows(&mut state);
-    add_round_key(&mut state, &round_keys[Nr * Nb..(Nr + 1) * Nb].concat().try_into().unwrap());
+    add_round_key(&mut state, &round_keys[NR * NB..(NR + 1) * NB].concat().try_into().unwrap());
 
     for i in 0..4 {
-        for j in 0..Nb {
+        for j in 0..NB {
             output[i + 4 * j] = state[i][j];
         }
     }
 }
 
 pub fn inv_cipher(input: &[u8; 16], output: &mut [u8; 16], key: &[u8; 16]) {
-    let mut state: State = [[0u8; Nb]; 4];
-    let mut round_keys = [[0u8; 4]; Nb * (Nr + 1)];
+    let mut state: State = [[0u8; NB]; 4];
+    let mut round_keys = [[0u8; 4]; NB * (NR + 1)];
 
     key_expansion(key, &mut round_keys);
 
     for i in 0..4 {
-        for j in 0..Nb {
+        for j in 0..NB {
             state[i][j] = input[i + 4 * j];
         }
     }
 
-    add_round_key(&mut state, &round_keys[Nr * Nb..(Nr + 1) * Nb].concat().try_into().unwrap());
+    add_round_key(&mut state, &round_keys[NR * NB..(NR + 1) * NB].concat().try_into().unwrap());
 
-    for round in (1..Nr).rev() {
+    for round in (1..NR).rev() {
         inv_shift_rows(&mut state);
         inv_sub_bytes(&mut state);
-        add_round_key(&mut state, &round_keys[round * Nb..(round + 1) * Nb].concat().try_into().unwrap());
+        add_round_key(&mut state, &round_keys[round * NB..(round + 1) * NB].concat().try_into().unwrap());
         inv_mix_columns(&mut state);
     }
 
@@ -227,7 +227,7 @@ pub fn inv_cipher(input: &[u8; 16], output: &mut [u8; 16], key: &[u8; 16]) {
     add_round_key(&mut state, &round_keys[0..4].concat().try_into().unwrap());
 
     for i in 0..4 {
-        for j in 0..Nb {
+        for j in 0..NB {
             output[i + 4 * j] = state[i][j];
         }
     }

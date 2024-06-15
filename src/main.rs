@@ -73,7 +73,7 @@ fn view_all_passwords() {
     assert!(OpenOptions::new().read(true).open("data.txt").is_ok(), "File does not exist");
 
     let content = read_to_string("data.txt").expect("Unable to read file");
-    let mut lines: Vec<&str> = content.split("\n").collect();
+    let lines: Vec<&str> = content.split("\n").collect();
     println!("{: <10} | {: <20} | {: <10}", "PASSWORD", "URL", "DATE ADDED");
     println!("{:-<10} | {:-<20} | {:-<10}", "", "", "");
 
@@ -96,7 +96,7 @@ fn delete_password(url: String) {
     assert!(url.len() > 0, "Password cannot be empty");
 
     let content = read_to_string("data.txt").expect("Unable to read file");
-    let mut lines: Vec<&str> = content.split("\n").collect();
+    let lines: Vec<&str> = content.split("\n").collect();
     let mut new_content: String = String::new();
 
     let mut count = 0;
